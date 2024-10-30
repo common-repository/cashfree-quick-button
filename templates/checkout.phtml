@@ -1,0 +1,233 @@
+<style>
+    /* .invalid class prevents CSS from automatically applying */
+    .invalid input:required:invalid {
+        background: #BE4C54;
+        font-size: 1.2em;
+        font-weight: 600;
+    }
+
+    /* Mark valid inputs during .invalid state */
+    .invalid input:required:valid {
+        background: #17D654;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        max-width: 400px;
+    }
+    .close {
+        color: #fff;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    #cfCheckoutModal {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .modal-header {
+        background-color: #672fd8;
+        padding: 10px;
+        color: #fff;
+    }
+    .modal-body {
+        margin-bottom:10px;
+    }
+    .modal-header h3 {
+        margin: 5px 0;
+        font-size: 20px;
+    }
+    .modal-header p {
+        font-size: 16px;
+    }
+    .modal-header .close {
+        font-family: auto;
+        line-height: 10px;
+        text-decoration:none;
+        color:#fff;
+        opacity: 1;
+    }
+    .form-group {
+        margin-top: 10px;
+    }
+    .form-modal label {
+        margin-bottom: 5px;
+        font-size: 15px;
+        display: inline-block;
+        font-weight: 500;
+    }
+    .form-modal input {
+        width: -webkit-fill-available;
+        padding: 3px;
+        outline: unset;
+        border: 1px solid #ccc;
+        height: 30px;
+        font-size: 16px;
+    }
+    .form-modal{
+        padding: 20px;
+    }
+    .align-right-btns{
+        text-align: right;
+        margin-top: 20px;
+    }
+    .align-right-btns .cancel-btns{
+        background-color: #fff;
+        padding: 7px 10px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        margin-right: 5px;
+        color: #000;
+    }
+    .align-right-btns .proceed-btns{
+        background-color: #672fd8;
+        color: #fff;
+        padding: 7px 10px;
+        border: 1px solid #672fd8;
+        font-size: 14px;
+    }
+    .cf_logo {
+        height:22px;
+        width:22px;
+        margin-right:5px;
+        float:left;
+        vertical-align:middle;
+    }
+    .alert {
+        padding: 10px;
+    }
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+</style>
+
+<!-- Add custom button on page/post -->
+<div>
+    <div>#cfButton#</div>
+    <div id='response'>#txMsg#</div>
+</div>
+
+<!-- Modal for getting customer detail -->
+<div class="modal" id="cfCheckoutModal" tabindex="-1" role="dialog" aria-labelledby="cfCheckoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3>
+                    <img class="cf_logo" src="#icon#" alt="img"/>
+                    <span>#title#</span>
+                </h3>
+                <p>#description#</p>
+                <h3>₹ #orderAmount#</h3>
+            </div>
+            <div class="form-modal">
+                <form class="needs-validation" id="cfCheckoutForm" method="post" action="#redirectUrl#" novalidate>
+                    <div class="form-group">
+                        <label for="customerName">Name</label>
+                        <input type="text" class="form-control" id="customerName" name="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerEmail">Email address</label>
+                        <input type="email" class="form-control" id="customerEmail" aria-describedby="emailHelp" name="customerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">Phone Number</label>
+                        <input type="text" class="form-control" id="customerPhone" name="customerPhone" required>
+                    </div>
+                    <div class="align-right-btns">
+                        <button type="button" class="cancel-btns">CANCEL</button>
+                        <button type="submit" class="proceed-btns">PROCEED</button>
+                        <input type="hidden" name="pageID" value="#pageID#">
+                    </div>
+                </form> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          else{
+            form.classList.add('was-validated');
+          }
+          
+        }, false);
+      });
+    }, false);
+  })();
+</script>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("cfCheckoutModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("btn_cashfree");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    var cancel_btn = document.getElementsByClassName("cancel-btns")[0];
+
+    // When the user clicks the button, open the modal 
+    btn.onclick = function() {
+    modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+    modal.style.display = "none";
+    }
+
+    cancel_btn.onclick = function() {
+    modal.style.display = "none";
+    }
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+    }
+</script>
